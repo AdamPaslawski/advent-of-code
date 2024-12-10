@@ -18,6 +18,8 @@ from collections import deque
 
 def find_trail_ends(trail_head: tuple):
     ends = set()
+    # Count for part 2
+    counter = 0
 
     q = deque()
     q.append(trail_head)
@@ -39,13 +41,18 @@ def find_trail_ends(trail_head: tuple):
                 if val == trail_location_value + 1:
                     if val == 9:
                         ends.add((nr, nc))
+                        counter += 1
                     else:
                         q.append(neighbor)
 
-    return len(ends)
+    return len(ends), counter
 
-
+pt_2 = 0
 for trailhead in trailheads:
-    score += find_trail_ends(trailhead)
+    unique_ends, all_ends =  find_trail_ends(trailhead)
+    score += unique_ends
+    pt_2 += all_ends
 
 print(score)
+
+print(pt_2)
