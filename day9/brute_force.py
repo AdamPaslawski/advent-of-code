@@ -1,12 +1,12 @@
-with open("input9.txt", "r") as f:
-    example = f.read().strip()
 
 # Take me to jail for this one.
 
-example = "20202"
-example = "02020"
-example = "12345"
-example = "2333133121414131402"
+#example = "65432"
+#example = "02020"
+#example = "20202"
+#example = "2333133121414131402"
+
+print("Part 1:")
 
 with open("input9.txt", "r") as f:
     example = f.read().strip()
@@ -15,7 +15,6 @@ def to_integer_array(s: str) -> list[int]:
 
 
 example_as_int_array = to_integer_array(example)
-print(example_as_int_array)
 
 def expand(int_array: list[int]) -> list[int]:
     result: list = []
@@ -35,8 +34,6 @@ def expand(int_array: list[int]) -> list[int]:
 
 example_expanded = expand(example_as_int_array)
 
-print(example_expanded)
-
 def fillerino(expanded_array: list[int]):
     lptr = 0
     while lptr < len(expanded_array):
@@ -55,11 +52,10 @@ def fillerino(expanded_array: list[int]):
                     break
         
         lptr += 1
+    return expanded_array
 
 
 filled = fillerino(example_expanded)
-
-print(filled)
 
 
 def do_the_checksum(expanded_array: list[int]):
@@ -74,3 +70,79 @@ def do_the_checksum(expanded_array: list[int]):
 check_summed = do_the_checksum(filled)
 
 print(check_summed)
+
+
+
+# part 2
+# Index, how much space that index has
+with open("input9.txt", "r") as f:
+    example = f.read().strip()
+
+print("Part 2:")
+
+example_as_int_array = to_integer_array(example)
+example_expanded = expand(example_as_int_array)
+
+def build_space_map(example_as_int_array):
+    space_array = []
+
+    offset = 0
+
+    for i in range(0,len(example_as_int_array)):
+
+        if i % 2 == 0:
+            # space is taken here
+            offset += example_as_int_array[i]
+        else:
+            # This is open space
+            space_index_start = offset
+            space_index_end = offset + example_as_int_array[i]
+            if space_index_start != space_index_end:
+                space_array.append( [space_index_start, space_index_end] )
+            offset += example_as_int_array[i]
+
+    return space_array
+     
+space_map = build_space_map(example_as_int_array)
+
+def space_map_size(start, end):
+    #meaning if we found a block with val end-start or smaller we can put it there.
+    return end-start
+
+
+i = len(example_expanded) -1
+while i > 0:
+
+    if example_expanded[i] == -1:
+        i -= 1
+        continue
+
+    block_val = example_expanded[i]
+    block_size = 0
+
+    while example_expanded[i-block_size] == block_val:
+       block_size += 1
+    
+    
+    for space in space_map:
+        if space[0] > i:
+            break
+        if (space[1] - space[0]) >= block_size and space[0] < i:
+            #move it!
+            for j in range(space[0], space[0] + block_size):
+                example_expanded[j] = block_val
+            for j in range(i-block_size + 1, i + 1):
+                example_expanded[j] = -1
+            
+            space[0] = space[0] + block_size
+            if space[0] == space[1]:
+                del space
+            break
+
+    i -= block_size
+
+part_2 = do_the_checksum(example_expanded)
+
+print(part_2)
+
+
