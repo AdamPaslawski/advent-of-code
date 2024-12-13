@@ -1,0 +1,11 @@
+Button A: X+10, Y+10
+Button B: X+123123, Y+123123
+PRIZE: X=100, Y=100
+
+Button A: X+123123, Y+123123
+Button B: X+10, Y+10
+PRIZE: X=100, Y=100
+
+Button A: X+10, Y+10
+Button B: X+10, Y+10
+PRIZE: X=100, Y=110
